@@ -4,7 +4,11 @@
 // Location:(23.7000° N, 90.3750° E)
 // TimeZone: +6
 command: "php -f ./prayer.widget/PrayTime.php calc_method=1 asr_method=1 lat=23.70 lon=90.37 tz=+6",
- 
+
+hourFormat12: true,
+hideSunset: true,
+addEdgeFiller: true,
+
 refreshFrequency: 15000,
 
 render: function () {
@@ -43,6 +47,7 @@ table																		\n\
 																				\n\
 td																			\n\
 	color: rgba(#fff, 0.8)								\n\
+	padding: 0 5px 0 5px 									\n\
 	background: #308c6a										\n\
 																				\n\
 .titles 																\n\
@@ -71,6 +76,9 @@ td																			\n\
 																						\n\
 .values .upcoming,													\n\
 	border-bottom-left-radius: current-round  \n\
+																						\n\
+.filler																			\n\
+	padding: 0 2px 0 2px 											\n\
 ",
 
 update: function (output, domEl) {
@@ -81,6 +89,11 @@ update: function (output, domEl) {
 	var names = lines[0].split(",");
 	var times = lines[1].split(",");
 
+	if (this.hideSunset) {
+		names.splice(4,1);
+		times.splice(4,1);	
+	};
+	
 	var curIndex = times.length-1;
 	var now = new Date();
 	var time = new Date();
@@ -99,11 +112,27 @@ update: function (output, domEl) {
 			if(i == curIndex) className = "current";
 			else if(i == curIndex-1) className = "passed";
 			else if(i == curIndex+1) className = "upcoming"
+			var hhmm = times[i];
+			if (this.hourFormat12) {
+				hhmm = hhmm.split(":");
+				if(hhmm[0]>12) hhmm[0]-=12;
+				hhmm = hhmm.join(":");
+			};
 			titles += '<td class="' + className + '">' + names[i] + '</td>';
-			values += '<td class="' + className + '">' + times[i] + '</td>';
+			values += '<td class="' + className + '">' + hhmm + '</td>';
 	}
-	$(domEl).find('.titles').html(titles);
-	$(domEl).find('.values').html(values);
+	$(domEl).find('.titles').html(this.fillSides(titles, curIndex, names.length));
+	$(domEl).find('.values').html(this.fillSides(values, curIndex, times.length));
+},
+
+fillSides: function(cols, current, total) {
+	if(this.addEdgeFiller) {
+		if(current==0)
+			return "<td class='passed filler'></td>"+cols;
+		else if(current==total-1)
+			return cols+"<td class='upcoming filler'></td>";
+	}
+	return cols;
 }
 
 /*
