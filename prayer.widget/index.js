@@ -115,7 +115,7 @@ update: function (output, domEl) {
 			var hhmm = times[i];
 			if (this.hourFormat12) {
 				hhmm = hhmm.split(":");
-				if(hhmm[0]>12) hhmm[0]-=12;
+				hhmm[0] -= (hhmm[0]>12)? 12:0;
 				hhmm = hhmm.join(":");
 			};
 			titles += '<td class="' + className + '">' + names[i] + '</td>';
