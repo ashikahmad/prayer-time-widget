@@ -3,7 +3,12 @@
 // Dhaka: 
 // Location:(23.7000° N, 90.3750° E)
 // TimeZone: +6
-command: "php -f ./prayer.widget/PrayTime.php calc_method=1 asr_method=1 lat=23.70 lon=90.37 tz=+6",
+command: "php -f ./prayer.widget/PrayTime.php \
+calc_method=1 \
+asr_method=1 \
+lat=23.70 \
+lon=90.37 \
+tz=+6",
 
 hourFormat12: true,
 hideSunset: true,
